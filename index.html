@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="google-site-verification" content="jmEkSrB5YI21INwWirBoAI4pO_uzx871ny37YYQNnho" />
+  <meta name="description"
+    content="PAGE: Parts-Aware GuidancE for Co-Speech Gesture Portrait Video Generation. A general, backbone-agnostic optimization framework for diffusion-based co-speech gesture portrait video generation. Published in IEEE TCSVT 2026.">
+  <meta name="keywords"
+    content="PAGE, Co-Speech Gesture, Portrait Video Generation, Audio-Driven, Diffusion Model, Parts-Aware Guidance, CAS Dataset, PATS, TCSVT 2026">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PAGE: Parts-Aware GuidancE for Co-Speech Gesture Portrait Video Generation</title>
+
+  <!-- Privacy-friendly analytics by Plausible3 -->
+  <script async src="https://plausible.io/js/pa-C16739jwgkM9A4wX5Gkwy.js"></script>
+  <script>
+    window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+    plausible.init()
+  </script>
+
+  <!-- Google tag (gtag.js) Google Analytics-->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-S5CX5J2Q31"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-S5CX5J2Q31');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+
+  <style>
+    .project-nav {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem 1rem;
+      background-color: #ffffff;
+      border-bottom: 1px solid #e5e5e5;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .project-nav .home-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.25rem;
+      height: 2.25rem;
+      color: #4a4a4a;
+      font-size: 1.1rem;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .project-nav .home-icon:hover {
+      color: hsl(204, 86%, 53%);
+      background-color: #dce3f2;
+    }
+
+    .project-nav .nav-link {
+      padding: 0.4rem 0.9rem;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: 500;
+      color: #000000;
+      background-color: #ffffff;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+
+    .project-nav .nav-link:hover {
+      color: hsl(204, 86%, 53%);
+      font-weight: bold;
+      background-color: #dce3f2;
+    }
+
+    .project-nav .nav-link.is-current {
+      color: hsl(204, 86%, 53%);
+      font-weight: bold;
+      background-color: #dce3f2;
+    }
+
+    /* ---------- 视频轮播：每行展示 3 个，左右箭头 + 底部圆点 ---------- */
+    /* 两侧 36px 留白用于放箭头（箭头由 JS 移到此容器下，不会被裁剪） */
+    .carousel-wrap {
+      position: relative;
+      max-width: 940px;
+      margin: 0 auto 20px auto;
+      padding: 0 36px;
+    }
+
+    /* 超出当前视图的滑块必须裁掉，否则右侧会露出半个视频、造成左右不对称 */
+    .video-carousel {
+      overflow: hidden;
+    }
+
+    /* 为底部圆点预留空间（.slider 保持 bulma 默认的 position: relative，
+       否则滑块 offsetLeft 会带上外层内边距，导致整行左移） */
+    .video-carousel .slider {
+      padding-bottom: 34px;
+    }
+
+    /* 左右各 5px 内边距 => 相邻视频间距恒为 10px */
+    .video-carousel .item {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 5px;
+      font-size: 0;
+    }
+
+    /* 视频按素材原始比例展示，不产生黑边；各行视频宽度完全一致 */
+    .video-carousel video {
+      display: block;
+      width: 100%;
+      height: auto;
+      background: #000;
+      border: 1px solid #dbdbdb;
+      border-radius: 8px;
+    }
+
+    /* 512x512 素材（PATS / Singing） */
+    .video-carousel.is-square video {
+      aspect-ratio: 1 / 1;
+    }
+
+    /* 480x832 素材（CAS） */
+    .video-carousel.is-portrait video {
+      aspect-ratio: 480 / 832;
+    }
+
+    /* 箭头：位于视频左右两侧的留白内，不遮挡视频 */
+    .carousel-wrap .slider-navigation-previous,
+    .carousel-wrap .slider-navigation-next {
+      top: 50%;
+      /* -16px 使自身居中，再上移 17px 抵消底部 34px 的圆点占位 */
+      margin-top: -33px;
+      width: 32px;
+      height: 32px;
+      color: #4a4a4a;
+      border-color: #e6e6e6;
+      box-shadow: 0 1px 4px rgba(50, 50, 50, 0.16);
+      z-index: 2;
+    }
+
+    /* 贴近视频：箭头右缘距首个视频左缘约 5px */
+    .carousel-wrap .slider-navigation-previous {
+      left: 4px;
+    }
+
+    .carousel-wrap .slider-navigation-next {
+      right: 4px;
+    }
+
+    .carousel-wrap .slider-navigation-previous svg,
+    .carousel-wrap .slider-navigation-next svg {
+      width: 28%;
+    }
+
+    /* 圆点：任意宽度下都显示，且位于视频下方 */
+    .video-carousel .slider-pagination {
+      display: flex !important;
+      bottom: 6px;
+      left: 0;
+      right: 0;
+      padding: 0;
+    }
+
+    .video-carousel .slider-pagination .slider-page {
+      background: #cfd4dc;
+      box-shadow: none;
+      width: 9px;
+      height: 9px;
+    }
+
+    .video-carousel .slider-pagination .slider-page.is-active {
+      background: hsl(204, 86%, 53%);
+    }
+
+    /* 视频数量不足以滑动时，隐藏箭头与圆点 */
+    .carousel-wrap.has-no-controls .slider-navigation-previous,
+    .carousel-wrap.has-no-controls .slider-navigation-next,
+    .carousel-wrap.has-no-controls .slider-pagination {
+      display: none !important;
+    }
+
+    .carousel-wrap.has-no-controls .video-carousel .slider {
+      padding-bottom: 0;
+    }
+
+    .video-hint {
+      color: #7a7a7a;
+      font-size: 0.9rem;
+      margin-top: -4px;
+      margin-bottom: 14px;
+    }
+
+    .framework-image {
+      width: 100%;
+      max-width: 960px;
+      border-radius: 6px;
+    }
+
+    .group-title {
+      font-weight: 600;
+      color: #363636;
+      margin-bottom: 10px;
+    }
+
+    @media screen and (max-width: 640px) {
+      .carousel-wrap {
+        padding: 0 30px;
+      }
+
+      .video-carousel .item {
+        padding: 0 3px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- 顶部项目导航 -->
+  <nav class="project-nav" aria-label="project navigation">
+    <a class="home-icon" href="#" aria-label="home">
+      <i class="fas fa-home"></i>
+    </a>
+    <a class="nav-link is-current" href="./index.html">PAGE</a>
+    <a class="nav-link" href="https://aigc-explorer.github.io/MARRS/">MARRS</a>
+    <a class="nav-link" href="https://aigc-explorer.github.io/TIMotion-page/">TIMotion</a>
+  </nav>
+
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">
+              PAGE: <b>P</b>arts-<b>A</b>ware <b>G</b>uidanc<b>E</b> for Co-Speech Gesture Portrait Video Generation
+            </h1>
+            <p class="is-size-5 has-text-centered"
+              style="color: rgb(255, 0, 0); font-weight: bold; margin-bottom: 0.5rem;">IEEE TCSVT 2026
+            </p>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                <a href="">Yabiao Wang</a><sup>*</sup>,</span>
+              <span class="author-block">
+                <a href="">Jiafu Wu</a><sup>*</sup>,</span>
+              <span class="author-block">
+                <a href="">Yicheng Xu</a>,</span>
+              <span class="author-block">
+                <a href="">Teng Hu</a>,</span>
+              <span class="author-block">
+                <a href="">Shengzhe Zhou</a>,</span>
+              <span class="author-block">
+                <a href="">Yanxiao Sun</a>,</span>
+              <span class="author-block">
+                <a href="">Jiangning Zhang</a>,</span>
+              <span class="author-block">
+                <a href="">Ying Tai</a>,</span>
+              <span class="author-block">
+                <a href="">Yong Liu</a><sup>&#10013;</sup>,</span>
+              <span class="author-block">
+                <a href="">Ming-Hsuan Yang</a>
+              </span>
+            </div>
+
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup></sup>Zhejiang University</span>
+            </div>
+
+            <div class="column has-text-centered">
+              <div class="publication-links">
+                <span class="link-block">
+                  <a href="#" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                    </span>
+                    <span>Paper</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="#" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="ai ai-arxiv"></i>
+                    </span>
+                    <span>arXiv</span>
+                  </a>
+                </span>
+                <span class="link-block">
+                  <a href="#" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Abstract</h2>
+          <div class="content has-text-justified">
+              Co-speech gesture video generation aims to synthesize realistic, audio-driven portrait videos from a
+              single reference image and a speech signal. Despite advances in visual quality, diffusion-based approaches
+              still suffer from degraded local details and imperfect audio&ndash;visual alignment.
+              We present <strong>PAGE</strong> (<strong>P</strong>arts-<strong>A</strong>ware <strong>G</strong>uidanc<strong>E</strong>), a general, backbone-agnostic optimization framework for
+              diffusion-based generation that enhances local spatial fidelity and global audio&ndash;visual consistency
+              at both the <strong>training-objective</strong> and <strong>denoising-trajectory</strong> levels. During training, we
+              propose <strong>Parts-Specific Reweighting (PSR)</strong>, which adaptively increases supervision in
+              semantically important regions such as lips, eyes, and hands, improving visual fidelity in perceptually
+              critical areas. During inference, we introduce <strong>Consistency Classifier Guidance (CCG)</strong>, an
+              audio-conditioned latent classifier that identifies and corrects audio&ndash;visual inconsistencies in the
+              generated video. We further design <strong>Differential Guidance (DG)</strong>, an efficient inference
+              strategy that refines facial and body motion separately while avoiding cross-region interference.
+              To enable large-scale evaluation, we construct the <strong>Chinese Announcer Speech (CAS)</strong>
+              dataset&mdash;the first comprehensive Chinese benchmark for co-speech gesture portrait video generation.
+              Compared with the widely used PATS dataset, CAS includes substantially more identities, video clips, and
+              scene diversity. Extensive experiments on both PATS and CAS demonstrate that PAGE achieves
+              state-of-the-art performance in perceptual quality, gesture diversity, and audio&ndash;visual alignment.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width has-text-centered">
+          <h2 class="title is-3 has-text-centered">Generated Videos on PATS and CAS</h2>
+          <p class="video-hint">Audio is enabled &mdash; click play to watch with sound.</p>
+
+          <p class="group-title">PATS</p>
+          <div class="carousel-wrap">
+            <div class="carousel video-carousel is-square">
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/oliver_1.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/chemistry_7.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/seth_6.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/oliver_2.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+
+          <p class="group-title">CAS</p>
+          <div class="carousel-wrap">
+            <div class="carousel video-carousel is-portrait">
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/CAS_8.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/CAS_4.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/CAS_32.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/CAS_42.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width has-text-centered">
+          <h2 class="title is-3 has-text-centered">Singing</h2>
+          <p class="video-hint">Audio is enabled &mdash; click play to watch with sound.</p>
+
+          <div class="carousel-wrap">
+            <div class="carousel video-carousel is-square">
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/sing_01_PAGE_Generated.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/sing_07_PAGE_Generated.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/sing_02_PAGE_Generated.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-wrap">
+            <div class="carousel video-carousel is-square">
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/sing_04_PAGE_Generated.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/sing_06_PAGE_Generated.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/sing_03_PAGE_Generated.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3 has-text-centered">Overall Framework</h2>
+          <br>
+          <div class="has-text-centered">
+            <img src="./static/images/ppl.jpg" class="framework-image" alt="Overall framework of PAGE." />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3 has-text-centered">Comparison Between the PATS and Our CAS Datasets</h2>
+          <br>
+          <div class="has-text-centered">
+            <img src="./static/images/CAS_dataset.png" class="framework-image"
+              alt="Comparison between the PATS and our CAS datasets." />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3 has-text-centered">Quantitative Evaluation</h2>
+          <br>
+          <div class="has-text-centered">
+            <img src="./static/images/quant_result.png" class="framework-image"
+              alt="Quantitative evaluation results of PAGE." />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="BibTeX">
+    <div class="container is-max-desktop content">
+      <h2 class="title">BibTeX</h2>
+      <pre><code>@article{Wang2026PAGE,
+    author    = {Yabiao Wang and Jiafu Wu and Yicheng Xu and Teng Hu and Shengzhe Zhou and Yanxiao Sun and Jiangning Zhang and Ying Tai and Yong Liu and Ming-Hsuan Yang},
+    title     = {PAGE: Parts-Aware GuidancE for Co-Speech Gesture Portrait Video Generation},
+    journal   = {IEEE Transactions on Circuits and Systems for Video Technology (TCSVT)},
+    year      = {2026},
+    volume    = {},
+    number    = {},
+    pages     = {},
+    doi       = {}
+  }</code></pre>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>
+            This website is licensed under a <a rel="license"
+              href="http://creativecommons.org/licenses/by-sa/4.0/">Creative
+              Commons Attribution-ShareAlike 4.0 International License</a>.
+          </p>
+          <p>
+            Website source code based on the <a href="https://nerfies.github.io/"> Nerfies</a> project page. If you want
+            to reuse their <a href="https://github.com/nerfies/nerfies.github.io">source code</a>, please credit them
+            appropriately.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+</body>
+
+</html>
