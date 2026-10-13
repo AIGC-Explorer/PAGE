@@ -222,6 +222,21 @@
       margin-bottom: 10px;
     }
 
+    /* 数据集申请说明弹窗 */
+    .dataset-modal-box {
+      padding: 2rem 2.25rem;
+      border-radius: 10px;
+    }
+
+    .dataset-modal-icon {
+      color: hsl(204, 86%, 53%);
+      margin-bottom: 0.75rem;
+    }
+
+    #dataset-modal .modal-content {
+      max-width: 540px;
+    }
+
     @media screen and (max-width: 640px) {
       .carousel-wrap {
         padding: 0 30px;
@@ -288,7 +303,8 @@
             <div class="column has-text-centered">
               <div class="publication-links">
                 <span class="link-block">
-                  <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <a href="https://ieeexplore.ieee.org/document/11717537"
+                    class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                       <i class="fas fa-file-pdf"></i>
                     </span>
@@ -296,7 +312,8 @@
                   </a>
                 </span>
                 <span class="link-block">
-                  <a href="#" class="external-link button is-normal is-rounded is-dark">
+                  <a href="https://arxiv.org/abs/2610.13301"
+                    class="external-link button is-normal is-rounded is-dark">
                     <span class="icon">
                       <i class="ai ai-arxiv"></i>
                     </span>
@@ -311,6 +328,14 @@
                     <span>Code</span>
                   </a>
                 </span>
+                <span class="link-block">
+                  <a href="#" id="dataset-link" class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fas fa-film"></i>
+                    </span>
+                    <span>Dataset</span>
+                  </a>
+                </span>
               </div>
             </div>
           </div>
@@ -318,6 +343,23 @@
       </div>
     </div>
   </section>
+
+  <!-- 数据集申请说明弹窗 -->
+  <div class="modal" id="dataset-modal">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+      <div class="box has-text-centered dataset-modal-box">
+        <span class="icon is-large dataset-modal-icon">
+          <i class="fas fa-film fa-2x"></i>
+        </span>
+        <p class="is-size-5">
+          Please email <a href="mailto:yabiaowang@zju.edu.cn">yabiaowang@zju.edu.cn</a>, state your affiliation
+          and purpose for the request.
+        </p>
+      </div>
+    </div>
+    <button class="modal-close is-large" aria-label="close"></button>
+  </div>
 
   <section class="section">
     <div class="container is-max-desktop">

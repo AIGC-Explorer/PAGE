@@ -48,5 +48,33 @@ $(document).ready(function () {
   window.addEventListener('resize', refreshControls);
   window.addEventListener('orientationchange', refreshControls);
 
+  // Dataset 按钮：弹出数据集申请说明
+  var datasetModal = document.getElementById('dataset-modal');
+  var datasetLink = document.getElementById('dataset-link');
+
+  if (datasetModal && datasetLink) {
+    var openModal = function (event) {
+      event.preventDefault();
+      datasetModal.classList.add('is-active');
+    };
+
+    var closeModal = function () {
+      datasetModal.classList.remove('is-active');
+    };
+
+    datasetLink.addEventListener('click', openModal);
+
+    // 点击遮罩层或关闭按钮都可关闭
+    datasetModal
+      .querySelectorAll('.modal-background, .modal-close')
+      .forEach(function (el) {
+        el.addEventListener('click', closeModal);
+      });
+
+    document.addEventListener('keydown', function (event) {
+      if (event.key === 'Escape') closeModal();
+    });
+  }
+
   bulmaSlider.attach();
 });
