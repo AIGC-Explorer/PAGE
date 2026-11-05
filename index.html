@@ -205,6 +205,16 @@
       aspect-ratio: 480 / 832;
     }
 
+    /* 2484x832 素材（六种方法对比，横向拼接） */
+    .video-carousel.is-wide video {
+      aspect-ratio: 2484 / 832;
+    }
+
+    /* 2560x512 素材（PATS 六种方法对比，横向拼接） */
+    .video-carousel.is-wide-pats video {
+      aspect-ratio: 2560 / 512;
+    }
+
     /* 箭头：位于视频左右两侧的留白内，不遮挡视频 */
     .carousel-wrap .slider-navigation-previous,
     .carousel-wrap .slider-navigation-next {
@@ -429,56 +439,111 @@
     <div class="container is-max-desktop">
       <div class="columns is-centered">
         <div class="column is-full-width has-text-centered">
-          <h2 class="title is-3 has-text-centered">Generated Videos on PATS and CAS</h2>
+          <h2 class="title is-3 has-text-centered">Comparison with Six Other Methods</h2>
           <p class="video-hint">Audio is enabled &mdash; click play to watch with sound.</p>
 
-          <p class="group-title">PATS</p>
+          <p class="group-title">CAS Dataset</p>
           <div class="carousel-wrap">
-            <div class="carousel video-carousel is-square">
+            <div class="carousel video-carousel is-wide" data-slides-to-show="1">
               <div class="item">
                 <video controls loop playsinline preload="metadata">
-                  <source src="./static/videos/oliver_1.mp4" type="video/mp4">
+                  <source src="./static/videos/CAS_A_1.mp4" type="video/mp4">
                 </video>
               </div>
               <div class="item">
                 <video controls loop playsinline preload="metadata">
-                  <source src="./static/videos/chemistry_7.mp4" type="video/mp4">
-                </video>
-              </div>
-              <div class="item">
-                <video controls loop playsinline preload="metadata">
-                  <source src="./static/videos/seth_6.mp4" type="video/mp4">
-                </video>
-              </div>
-              <div class="item">
-                <video controls loop playsinline preload="metadata">
-                  <source src="./static/videos/oliver_2.mp4" type="video/mp4">
+                  <source src="./static/videos/CAS_A_2.mp4" type="video/mp4">
                 </video>
               </div>
             </div>
           </div>
 
-          <p class="group-title">CAS</p>
           <div class="carousel-wrap">
-            <div class="carousel video-carousel is-portrait">
+            <div class="carousel video-carousel is-wide" data-slides-to-show="1">
               <div class="item">
                 <video controls loop playsinline preload="metadata">
-                  <source src="./static/videos/CAS_8.mp4" type="video/mp4">
+                  <source src="./static/videos/CAS_B_1.mp4" type="video/mp4">
                 </video>
               </div>
               <div class="item">
                 <video controls loop playsinline preload="metadata">
-                  <source src="./static/videos/CAS_4.mp4" type="video/mp4">
+                  <source src="./static/videos/CAS_B_2.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-wrap">
+            <div class="carousel video-carousel is-wide" data-slides-to-show="1">
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/CAS_C_1.mp4" type="video/mp4">
                 </video>
               </div>
               <div class="item">
                 <video controls loop playsinline preload="metadata">
-                  <source src="./static/videos/CAS_32.mp4" type="video/mp4">
+                  <source src="./static/videos/CAS_C_2.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-wrap">
+            <div class="carousel video-carousel is-wide" data-slides-to-show="1">
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/CAS_D_1.mp4" type="video/mp4">
                 </video>
               </div>
               <div class="item">
                 <video controls loop playsinline preload="metadata">
-                  <source src="./static/videos/CAS_42.mp4" type="video/mp4">
+                  <source src="./static/videos/CAS_D_2.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+
+          <p class="group-title">PATS Dataset</p>
+          <div class="carousel-wrap">
+            <div class="carousel video-carousel is-wide-pats" data-slides-to-show="1">
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/PATS_a_1.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/PATS_a_2.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-wrap">
+            <div class="carousel video-carousel is-wide-pats" data-slides-to-show="1">
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/PATS_b_1.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/PATS_b_2.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+
+          <div class="carousel-wrap">
+            <div class="carousel video-carousel is-wide-pats" data-slides-to-show="1">
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/PATS_c_1.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/PATS_c_2.mp4" type="video/mp4">
                 </video>
               </div>
             </div>
@@ -487,7 +552,6 @@
       </div>
     </div>
   </section>
-
 
   <section class="section">
     <div class="container is-max-desktop">
@@ -531,6 +595,70 @@
               <div class="item">
                 <video controls loop playsinline preload="metadata">
                   <source src="./static/videos/sing_03_PAGE_Generated.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column is-full-width has-text-centered">
+          <h2 class="title is-3 has-text-centered">Generated Videos on PATS and CAS</h2>
+          <p class="video-hint">Audio is enabled &mdash; click play to watch with sound.</p>
+
+          <p class="group-title">PATS Dataset</p>
+          <div class="carousel-wrap">
+            <div class="carousel video-carousel is-square">
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/oliver_1.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/chemistry_7.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/seth_6.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/oliver_2.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+
+          <p class="group-title">CAS Dataset</p>
+          <div class="carousel-wrap">
+            <div class="carousel video-carousel is-portrait">
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/CAS_8.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/CAS_4.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/CAS_32.mp4" type="video/mp4">
+                </video>
+              </div>
+              <div class="item">
+                <video controls loop playsinline preload="metadata">
+                  <source src="./static/videos/CAS_42.mp4" type="video/mp4">
                 </video>
               </div>
             </div>
